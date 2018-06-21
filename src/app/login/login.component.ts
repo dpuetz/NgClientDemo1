@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IUser } from '../models/iuser';
+import { IUser } from './iuser';
 import { IMessage, Message } from '../shared/imessage';
 import { WebsiteService } from '../websites/website.service';
 import { NgForm } from '@angular/forms';
