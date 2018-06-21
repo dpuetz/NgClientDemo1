@@ -1,5 +1,5 @@
 import { Component, OnChanges, Input, Output, EventEmitter } from "@angular/core";
-import { IMessage, Message } from "../models/imessage";
+import { IMessage, Message } from "./imessage";
 declare var bootbox:any;
 
 

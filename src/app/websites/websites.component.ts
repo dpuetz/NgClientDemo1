@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Website } from './iwebsite'
 import { WebsiteService } from './website.service';
 import { ISearch } from './isearch';
-import { IMessage, Message } from '../models/imessage';
+import { IMessage, Message } from '../shared/imessage';
 
 
 @Component({

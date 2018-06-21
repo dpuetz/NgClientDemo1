@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router
 import { WebsiteService } from '../websites/website.service';
 import { IWebsite, Website } from './iwebsite';
 import { NgForm } from '@angular/forms';
-import { IMessage, Message } from '../models/imessage';
+import { IMessage, Message } from '../shared/imessage';
 
 
 @Component({
