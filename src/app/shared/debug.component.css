@@ -1,0 +1,9 @@
+.debugBox{
+    width:100%;
+    background-color: orangered;
+    color:white;
+    border-radius:3px;
+    padding:0px 10px 10px 10px;
+    margin-bottom:10px;
+}
+.buttonLink{color:white}

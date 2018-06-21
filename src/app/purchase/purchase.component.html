@@ -1,0 +1,147 @@
+
+<message [popup]="popup" (complete)="onComplete($event)"></message> 
+
+<div class="container container-wide">
+
+<div class="panel" >
+        <nav class="navbar navbar-default ">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                      <li class="navbarCollapseNone">
+                        <a  [routerLink] = "['/websites', websiteId, 'detail']">
+                          <i class="fa fa-angle-double-left"></i>
+                          Back</a>
+                      </li>
+                    </ul>
+                </div>
+          </nav>
+        
+<div class="panel-body">
+ 
+        <div style="text-align:center"><label>Purchase for: {{websiteName}}</label></div>
+        <form #purchaseForm="ngForm">
+
+                 <div class="form-group">
+                        <label 
+                            class="control-label" 
+                            for="productName">Purchase name:</label>         
+                        <input type="text" 
+                            class="form-control"  
+                            id="productName"
+                            name="productName"
+                            #productName="ngModel"
+                            [(ngModel)]="purchase.productName" 
+                            required             
+                            />
+                            <div *ngIf ="wasSubmitted && !productName.valid"
+                                    class="alert alert-danger">
+                                    Purchase name is required.
+                            </div>                                
+                      </div>
+                                      
+                      <div class="form-group">
+                        <label class="control-label" for="purchasedOn">Date purchased:</label>    
+                        <div class="input-group">
+                            <input type="text" 
+                                class="form-control"  
+                                a2e-datetimepicker    
+                                [options]="a2eOptions"                   
+                                id="purchasedOn"
+                                name="purchasedOn"
+                                #purchasedOn="ngModel"
+                                [(ngModel)]="purchase.purchasedOn"              
+                                />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div> 
+                      </div> 
+
+                      <div class="form-group">
+                            <label class="control-label" for="arrivedOn">Date received:</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                    class="form-control"  
+                                    a2e-datetimepicker  
+                                    [options]="a2eOptions"                      
+                                    id="arrivedOn"
+                                    name="arrivedOn"
+                                    #arrivedOn="ngModel"
+                                    [(ngModel)]="purchase.arrivedOn" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>  <!-- datepicker --> 
+                      </div> <!-- form-group -->
+
+                        <div class="form-group">
+                            <label 
+                            class="control-label" 
+                            for="totalAmount">Total paid:</label>  
+                         <div class="input-group">   
+                            <span class="input-group-addon">$</span>     
+                            <input type="text" 
+                                class="form-control"                         
+                                placeholder=""
+                                id="totalAmount"
+                                name="totalAmount"
+                                #totalAmount="ngModel"
+                                [(ngModel)]="purchase.totalAmount" 
+                                currencyMask                                      
+                                />
+                        </div> <!-- input-group    --> 
+                        </div> <!-- form-group    --> 
+                 
+                      <div class="form-group">
+                        <label 
+                            class="control-label" 
+                            for="shippingAmount">Shipping paid:</label>  
+                <div class="input-group">   
+                        <span class="input-group-addon">$</span>                                     
+                        <input type="text" 
+                            class="form-control"                         
+                            placeholder=""
+                            id="shippingAmount"
+                            name="shippingAmount"
+                            #shippingAmount="ngModel"
+                            [(ngModel)]="purchase.shippingAmount"
+                            currencyMask              
+                            />
+                    </div> <!-- input-group    --> 
+                      </div><!-- form-group    -->    
+                    
+                      <div class="form-group">
+                            <label 
+                                class="control-label" 
+                                for="notes">Notes:</label>         
+                            <textarea type="text" 
+                                class="form-control"                         
+                                id="notes"
+                                name="notes"
+                                #notes="ngModel"
+                                [(ngModel)]="purchase.notes"              
+                                ></textarea>
+                      </div>   
+          
+
+  <div class="form-group">
+      <div class="row" >
+      <div style="margin-left:20px;">
+                    <div class="pull-left bottom-right-space"  >
+                      <button class="btn btn-info " 
+                            [disabled]="wasSubmitted && purchaseForm.invalid"
+                            (click)="saveIt(purchaseForm);">Save</button>
+                    </div>          
+                    <div class="pull-left bottom-right-space " >
+                      <button class="btn btn-info " (click)="deleteIt();"  *ngIf = "purchase.purchaseID > 0">Delete</button>
+                    </div>
+                    <div class="pull-left bottom-right-space" >              
+                      <button class="btn btn-info" 
+                            [routerLink] = "['/websites', websiteId, 'detail']">
+                            Cancel</button>                       
+                    </div>
+      </div>  
+      </div>            
+      </div>
+                
+        </form>
+</div> <!--panel-body-->
+</div> <!--panel-->
+
+</div> <!-- container -->
