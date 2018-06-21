@@ -6,11 +6,11 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams, HttpErrorResponse  } from '@angular/common/http';
 
 //my models
-import { IWebsite, Website } from '../models/iwebsite';
-import { IPurchase, Purchase } from '../models/ipurchase';
+import { IWebsite, Website } from './iwebsite';
+import { IPurchase, Purchase } from './ipurchase';
 
 import { IUser } from '../models/iuser';
-import { ISearch } from '../models/isearch';
+import { ISearch } from './isearch';
 import { environment } from '../../environments/environment';
 
 

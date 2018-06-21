@@ -1,5 +1,5 @@
 import { Component,  OnDestroy } from '@angular/core';
-import { IPurchase, Purchase } from '../models/ipurchase'
+import { IPurchase, Purchase } from './ipurchase'
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
 import { NgForm } from '@angular/forms';
