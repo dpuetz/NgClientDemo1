@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IUser } from './iuser';
 import { IMessage, Message } from '../shared/imessage';
-import { WebsiteService } from '../websites/website.service';
+import { LoginService } from './login.service';
 import { NgForm } from '@angular/forms';
 
 
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     hasError:boolean=false;
 
     constructor( private router: Router,
-                 private websiteService: WebsiteService ) { }
+                 private loginService: LoginService ) { }
 
     ngOnInit() {
         this.model = {username:'Guest', password:'Password'};
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
         if (!loginForm.valid)
             return;
 
-        this.websiteService.doLogin(this.model)
+        this.loginService.doLogin(this.model)
             .subscribe(val => 
                 {
                     this.router.navigate(['/websites']);

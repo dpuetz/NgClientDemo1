@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpParams, HttpErrorResponse  }
 import { IWebsite, Website } from './iwebsite';
 import { IPurchase, Purchase } from './ipurchase';
 
-import { IUser } from '../models/iuser';
+// import { IUser } from '../models/iuser';
 import { ISearch } from './isearch';
 import { environment } from '../../environments/environment';
 
@@ -29,7 +29,7 @@ export class WebsiteService {
 
     private domain = environment.baseUrl;
 
-    private loginUrl: string;
+    // private loginUrl: string;
     private searchUrl: string;
     private websiteUrl: string;
     private purchaseUrl: string;
@@ -37,7 +37,7 @@ export class WebsiteService {
 
     constructor(private http: HttpClient) { 
 
-        this.loginUrl = this.domain + 'api/users';
+        // this.loginUrl = this.domain + 'api/users';
         this.searchUrl = this.domain + 'api/websitesearch';
         this.websiteUrl = this.domain + 'api/websites';
         this.purchaseUrl = this.domain + 'api/Purchases';
@@ -186,14 +186,14 @@ export class WebsiteService {
         );        
     }    
 
-    doLogin(user: IUser): Observable<boolean>{
-        return this.http
-            .post<boolean>(this.loginUrl, user,  httpOptions)
-            .pipe(
-                tap(purchaseID => this.log('doLogin')),          
-                catchError(this.handleError)
-        ); 
-    }
+    // doLogin(user: IUser): Observable<boolean>{
+    //     return this.http
+    //         .post<boolean>(this.loginUrl, user,  httpOptions)
+    //         .pipe(
+    //             tap(purchaseID => this.log('doLogin')),          
+    //             catchError(this.handleError)
+    //     ); 
+    // }
 
     private log(message: string) {
         console.log("Log Message = ", message);
