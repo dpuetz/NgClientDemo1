@@ -1,5 +1,5 @@
 import { Component, OnChanges, Input } from "@angular/core";
-import { WebsiteService } from '../services/website.service';
+import { WebsiteService } from '../websites/website.service';
 
 
 @Component({

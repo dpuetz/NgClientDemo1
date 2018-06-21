@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
-import { WebsiteService } from '../services/website.service';
+import { WebsiteService } from '../websites/website.service';
 import { IWebsite, Website } from '../models/iwebsite';
 import { NgForm } from '@angular/forms';
 import { IMessage, Message } from '../models/imessage';

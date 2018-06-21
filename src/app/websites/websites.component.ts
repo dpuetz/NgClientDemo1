@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Website } from '../models/iwebsite'
-import { WebsiteService } from '../services/website.service';
+import { WebsiteService } from '../websites/website.service';
 import { ISearch } from '../models/isearch';
 import { IMessage, Message } from '../models/imessage';
 
