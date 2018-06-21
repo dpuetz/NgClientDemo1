@@ -35,19 +35,18 @@ export class LoginComponent implements OnInit {
         this.loginService.doLogin(this.model)
             .subscribe(val => 
                 {
-                    this.router.navigate(['/websites']);
+                    if (val)
+                        this.router.navigate(['/websites']);
+                    else
+                        this.badLogin();
                 },
-                error => 
-                {                
-                    if (this.hasError == false)  //they will see this error twice if I don't prevent the second time with this.
-                    {
-                        this.hasError = true;                    
-                        this.popup = new Message('alert', 'Since this is a demo, I\'ll login for you.', "onComplete", 0);   
-                    }
-                }); //subscribe   
-
-
+                error => this.badLogin()
+            ); //subscribe   
     }//loginIn
+
+    badLogin(): void {
+        this.popup = new Message('alert', 'Since this is a demo, I\'ll login for you.', "onComplete", 0);
+    }
 
     onComplete(event:any):void{
         this.router.navigate(['/websites']);
