@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { LoginComponent } from './login/login.component';
 import { WebsitesComponent } from './websites/websites.component';
-import { WebsiteDetailComponent } from './website-detail/website-detail.component';
+import { WebsiteDetailComponent } from './websites/website-detail.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { CurrencyMaskModule } from "ng2-currency-mask"; 
 import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ng2-currency-mask/src/currency-mask.config';
