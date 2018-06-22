@@ -1,4 +1,10 @@
 
+//httpClient reference: https://angular.io/guide/http
+//https://stackoverflow.com/questions/45505619/angular-4-3-3-httpclient-how-get-value-from-the-header-of-a-response
+//https://stackoverflow.com/questions/48543244/how-to-set-the-observe-response-option-globally-in-angular-4-3
+//https://stackoverflow.com/questions/48457312/angular-5-get-method-with-params-and-observe-response
+
+
 //angular for services
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
@@ -43,124 +49,86 @@ export class WebsiteService {
         let params = new HttpParams().set('searchWord', searchWord);
 
         const url = `${this.searchUrl}/${search.isPreferred}/${search.isBill}`;  
-        
+
         return this.http
-            .get<IWebsite[]>(url, {headers, params })
+            .get<HttpResponse<IWebsite[]>>(url, {headers, params, observe: 'response' })
             .pipe (
-                tap(val => this.log('getWebsites')),          
-                catchError(this.handleError2('getWebsites', []) )
+                tap( val => this.log(`getWebsites status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type} `)),    
+                map( val=> val.body),
+                catchError(this.handleError2('getWebsites', null) )
             ); //pipe
    
-    } // getWebsites       
+    } // getWebsites        
 
     saveWebsite (website: IWebsite): Observable<number> {
         return this.http
-            .post<number>(this.websiteUrl, website, httpOptions)
-            .pipe(
-                    tap(val => this.log('saveWebsite = ' + JSON.stringify(val))),
-                    catchError(this.handleError2('saveWebsite', 0) )
-        );
-    } 
- 
+            .post<HttpResponse<number>>(this.websiteUrl, website, { observe: 'response' })
+            .pipe(              
+                    tap(val => this.log('saveWebsite stringified = ' + JSON.stringify(val, null, 4))),
+                    map(val => val.body),      //return the websiteID            
+                    catchError(this.handleError2('saveWebsite', null) )  //return null if error
+            );//pipe
+    } //saveWebsite  
 
     deleteWebsite(websiteID: number) : Observable<boolean> {
         const url = `${this.websiteUrl}/${websiteID}`; 
         return this.http
-            .delete<boolean>(url, httpOptions)
+            .delete<HttpResponse<boolean>>(url, { observe: 'response' })
             .pipe(
-                    tap(val => this.log('val = ' + JSON.stringify(val)))
-                    , catchError(this.handleError)
-        );        
+                tap(val => this.log('deleteWebsite stringified = ' + JSON.stringify(val, null, 4))),
+                map(val => val.body),          //val returns true if no error
+                catchError(this.handleError2('deleteWebsite', null) ) //return null if error
+
+            ); //pipe
     }//deleteWebsite
-
-
-
 
     getWebsiteById(id: number): Observable<IWebsite> { 
         const url = `${this.websiteUrl}/${id}`; 
-        return this.http.get<IWebsite>(url)
-        .pipe(      
-            catchError(this.handleError)
-        );
+        return this.http.get<HttpResponse<IWebsite>>(url, { observe: 'response' })
+            .pipe(      
+                    tap(val => this.log('getWebsiteById stringified = ' + JSON.stringify(val, null, 4))),
+                    map(val => val.body),          //val returns IWebsite if no error
+                    catchError(this.handleError2('getWebsiteById', null))  //return null if error
+            ); //pipe
     }    
 
     getPurchase(websiteID: number, purchaseID: number): Observable<IPurchase>{
         const url = `${this.purchaseUrl}/${purchaseID}/${websiteID}`;       
         return this.http
-            .get<IPurchase>(url)
+            .get<HttpResponse<IPurchase>>(url, { observe: 'response' })
             .pipe(
-                // tap(search => this.log(`getPurchase`)),          
-                catchError(this.handleError)
-        );
-    }
+                    tap(val => this.log('getPurchase stringified = ' + JSON.stringify(val, null, 4))),
+                    map(val => val.body),          //val returns IPurchase if no error
+                    catchError(this.handleError2('getPurchase', null))  //return null if error
+            );//pipe
+    }      
 
     savePurchase(purchase: IPurchase): Observable<IPurchase>{
         return this.http
-            .post<IPurchase>(this.purchaseUrl, purchase,  httpOptions)
+            .post<HttpResponse<IPurchase>>(this.purchaseUrl, purchase,  { observe: 'response' })
             .pipe(
-                tap(purchaseID => this.log('savePurchase purchaseid: ' + purchaseID)),          
-                catchError(this.handleError)
+                    tap(val => this.log('savePurchase stringified = ' + JSON.stringify(val, null, 4))),
+                    map(val => val.body),          //val returns purchase if no error
+                    catchError(this.handleError2('savePurchase', null))  //return null if error
         ); 
     }
 
-// works ide
-    // deletePurchase(purchaseID: number, websiteID: number) : Observable<boolean>{
-    //     const url = `${this.purchaseUrl}/${purchaseID}/${websiteID}`; 
-    //     let deleteHttpOptions = {
-    //         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    //         body: purchaseID
-    //     };
-    //     return this.http
-    //         .delete<boolean>(url, deleteHttpOptions)
-    //         .pipe(
-    //                 tap(val => this.log('val = ' + JSON.stringify(val)))
-    //                 , catchError(this.handleError)
-    //     );        
-    // }   
-
-    //works ide
     deletePurchase(purchaseID: number, websiteID: number) : Observable<boolean>{
         const url = `${this.purchaseUrl}/${purchaseID}/${websiteID}`; 
 
         return this.http
-            .delete<boolean>(url, httpOptions)
+            .delete<HttpResponse<boolean>>(url, { observe: 'response' })
             .pipe(
-                    tap(val => this.log('val = ' + JSON.stringify(val)))
-                    , catchError(this.handleError)
+                tap(val => this.log('deletePurchase stringified = ' + JSON.stringify(val, null, 4))),
+                map(val => true),          //val return true if no error
+                catchError(this.handleError2('deletePurchase', null) ) //return null if error
         );        
     }    
 
-    // doLogin(user: IUser): Observable<boolean>{
-    //     return this.http
-    //         .post<boolean>(this.loginUrl, user,  httpOptions)
-    //         .pipe(
-    //             tap(purchaseID => this.log('doLogin')),          
-    //             catchError(this.handleError)
-    //     ); 
-    // }
 
     private log(message: string) {
-        console.log("Log Message = ", message);
+        console.log("Logged = ", message);
     }
-
-   
-    private handleError(err: HttpErrorResponse) {
-       let errorMessage = '';
-        if (err.error instanceof Error) {
-            // A client-side or network error occurred. Handle it accordingly.
-            errorMessage = `An error occurred: ${err.error.message}`;
-        } else {
-            // The backend returned an unsuccessful response code.
-            // The response body may contain clues as to what went wrong,
-            errorMessage = `Status code: ${err.status}, message: ${err.message}`; 
-           //errorMessage = "Status code: " + err.status + ", Message: " + err.message;
-        }
-        console.log("webservice errorMessage = " + errorMessage);
-        //this.log( "errorMessage = " + errorMessage); not working
-        //return Observable.throw(errorMessage);  //this creates multiple console errors.
-        return throwError(errorMessage); //this creates a better console error.
-    }
-
 
    private handleError2<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
         return (error: any): Observable<T> => {
@@ -174,7 +142,8 @@ export class WebsiteService {
 
             // Let the app keep running by returning an empty result.
             return of(result as T);
-    };     
+        }
+    };  //handleError2   
         
 
 

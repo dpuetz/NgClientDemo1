@@ -44,28 +44,26 @@ export class WebsiteDetailComponent implements OnDestroy {
         });
     }
 
+    /////////getting
     getWebsite(websiteID: number): void
     {
-        if (websiteID == 0)
-        {
+        if (websiteID == 0) {
             this.website = new Website();
-        }
-        else
-        {
+        } else  {
             this.websiteService.getWebsiteById(websiteID)
                 .subscribe(website => 
                         {
-                            this.website = website;
-                            window.scrollTo(0, 0);
-                        },
-                        error => 
-                        {
-                            this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
-                            window.scrollTo(0, 0);
-                            
-                        });
+                            if (website) {
+                                this.website = website;
+                                window.scrollTo(0, 0);
+                            } else {
+                                this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
+                                window.scrollTo(0, 0);
+                            }
+                           
+                        });//subscribe
 
-        }
+        }//else
     }//getWebsite      
 
     openWebsite(): void{
@@ -74,33 +72,37 @@ export class WebsiteDetailComponent implements OnDestroy {
         }
     }
   
+    /////////deleting
     deleteIt(): void{        
         this.popup = new Message('confirm', 'Are sure you want to delete this website and all it\'s purchases ?', "onComplete", 0);       
     }
-    
-    // onCompleteTwo(): void{       
-    //     this.router.navigate(['/websites']);        
-    // }
 
     onComplete(event:any):void {
         //if they confirm in the message-component dialog launched by this.deleteIt();
         this.websiteService.deleteWebsite(this.website.websiteID)
                     .subscribe(val => 
-                                {                                                            
-                                    //show success msg for 3 sec then route back to websites list
-                                    //works this.popup = new Message('alert', 'Delete was successful!', "onCompleteTwo");
-                                    this.popup = new Message('timedAlert', 'Delete was successful!', "", 1000);
-                                    setTimeout (() => {
-                                        this.router.navigate(['/websites']);
-                                    }, 1000);  
-                                },
-                                error => 
-                                {
-                                    this.popup = new Message('alert', 'Sorry, an error occurred while deleting the website.', "", 0);                                     
-                                }
+                        {       
+                            if (val)
+                            {                                                     
+                                //show success msg for 1 sec then route back to websites list
+                                this.popup = new Message('timedAlert', 'Delete was successful!', "", 1000);
+                                setTimeout (() => {
+                                    this.router.navigate(['/websites']);
+                                }, 1000);  
+                            } else {
+                                this.deleteError();
+                            }
+                        },
+                        error => this.deleteError()
+
                     );//subscribe
-    }//onComplete
-    
+    }//onConfirmDelete
+
+    deleteError(): void {
+        this.popup = new Message('alert', 'Sorry, an error occurred while deleting the website.', "", 0);
+    }
+
+    /////////saving
     saveIt(websiteForm: NgForm): void{
 
         this.wasSubmitted = true;
@@ -111,8 +113,8 @@ export class WebsiteDetailComponent implements OnDestroy {
             .subscribe(webserviceWebsiteID => 
                     {
                    
-                        if (!webserviceWebsiteID) {
-                            this.saveWebsiteError();
+                        if (webserviceWebsiteID === null) {
+                            this.saveError();
                         } else {
 
                             //We now have to update the component with a reroute back to this component or will have problems: and the url still says id = 0, and more issues as user keeps adding new websites.
@@ -126,16 +128,18 @@ export class WebsiteDetailComponent implements OnDestroy {
                         }
                    
                     },
-                    error => this.saveWebsiteError()
+                    error => this.saveError()
                             
                 ); //subscribe
 
     }//save it
+  
 
-    saveWebsiteError() : void {
+    saveError() : void {
         this.popup = new Message('alert', 'Sorry, an error occurred while saving the website.', "", 0);     
         window.scrollTo(0, 0);
     }
+
      ngOnDestroy() {
             // !important - avoid memory leaks caused by navigationSubscription 
             if (this.navigationSubscription) {  

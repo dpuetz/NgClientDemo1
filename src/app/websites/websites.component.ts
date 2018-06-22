@@ -43,13 +43,20 @@ export class WebsitesComponent implements OnInit {
         this.websiteService.getWebsites(searchParams)
             .subscribe(websites => 
             {
-                this.websites = websites;
-                this.recordsReturned = websites.length;               
+                if (websites) {
+                    this.websites = websites;
+                    this.recordsReturned = websites.length;                    
+                } else {
+                    this.getError();    
+                }
             },
-            error => {
-                this.popup = new Message('alert', 'Sorry, an error has occurred.', "", 0);   
-            });    
-    
+                error => this.getError()
+            ); //subscribe 
+    }
+
+    getError():void {
+        console.log("err");
+        this.popup = new Message('alert', 'Sorry, an error has occurred while getting the data.', "", 0);   
     }
 
 
