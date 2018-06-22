@@ -4,15 +4,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams, HttpErrorResponse  } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 //my models
 import { IWebsite, Website } from './iwebsite';
 import { IPurchase, Purchase } from './ipurchase';
-
-// import { IUser } from '../models/iuser';
 import { ISearch } from './isearch';
-import { environment } from '../../environments/environment';
-
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -23,21 +20,15 @@ const httpOptions = {
 })
 
 export class WebsiteService {
-    // private domain: string = "http://localhost:5500/";
-    // private domain: string = "http://localhost/NgApiDemo/";
-    // private domain: string = "http://takeMeToYourData.com/NgApiDemo/NgApiDemo/";
 
     private domain = environment.baseUrl;
 
-    // private loginUrl: string;
     private searchUrl: string;
     private websiteUrl: string;
     private purchaseUrl: string;
     
-
     constructor(private http: HttpClient) { 
 
-        // this.loginUrl = this.domain + 'api/users';
         this.searchUrl = this.domain + 'api/websitesearch';
         this.websiteUrl = this.domain + 'api/websites';
         this.purchaseUrl = this.domain + 'api/Purchases';
@@ -45,7 +36,7 @@ export class WebsiteService {
 
     getWebsites(search: ISearch): Observable<IWebsite[]> {   
 
-        let headers = new HttpHeaders();   //doesn't seem necessary
+        let headers = new HttpHeaders(); 
         headers = headers.append ('Content-Type', 'application/json');
 
         let searchWord = (search.searchWord == null || search.searchWord == "") ? "" : encodeURIComponent(search.searchWord); 
@@ -56,61 +47,56 @@ export class WebsiteService {
         return this.http
             .get<IWebsite[]>(url, {headers, params })
             .pipe (
-                tap(data => {
-                                //this.log(JSON.stringify(data))
-                           })
-                , catchError(this.handleError)
+                tap(val => this.log('getWebsites')),          
+                catchError(this.handleError2('getWebsites', []) )
+            ); //pipe
+   
+    } // getWebsites       
+
+    saveWebsite (website: IWebsite): Observable<number> {
+        return this.http
+            .post<number>(this.websiteUrl, website, httpOptions)
+            .pipe(
+                    tap(val => this.log('val = ' + JSON.stringify(val)))
+                    , catchError(this.handleError)
         );
-    }    
+    } 
 
-//         deleteWebsite(websiteID: number) : Observable<boolean> {
-//         const url = `${this.websiteUrl}/${websiteID}`; 
-//         //const url = this.websiteUrl; 
+    private handleError2<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
+        return (error: any): Observable<T> => {
+        
+            // TODO: better job of transforming error for user consumption
+            this.log(`${operation} failed: ${error.message}`);
+
+            // TODO: send the error to remote logging infrastructure
+            let str = JSON.stringify(error, null, 4); 
+            this.log('error=' + str); // log to console instead
+
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+    };     
         
 
-//         let hds = new HttpHeaders();
-//         hds.append('Content-Type', 'application/x-www-form-urlencoded');
-//         hds.append('Access-Control-Allow-Origin', '*');
-//         hds.append('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-//         hds.append('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+    // getWebsites(search: ISearch): Observable<IWebsite[]> {   
+
+    //     let headers = new HttpHeaders(); 
+    //     headers = headers.append ('Content-Type', 'application/json');
+
+    //     let searchWord = (search.searchWord == null || search.searchWord == "") ? "" : encodeURIComponent(search.searchWord); 
+    //     let params = new HttpParams().set('searchWord', searchWord);
+
+    //     const url = `${this.searchUrl}/${search.isPreferred}/${search.isBill}`;  
         
-//         let deleteHttpOptions = {
-//             headers: hds
-//         };
-
-//         // let deleteHttpOptions = {
-//         //     headers: hds,
-//         //     body: websiteID
-//         // };
-
-// // header('Access-Control-Allow-Origin: *');
-// // header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-// // header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
-
-//         return this.http
-//             .delete<boolean>(url, deleteHttpOptions)
-//             .pipe(
-//                     tap(val => this.log('val = ' + JSON.stringify(val)))
-//                     , catchError(this.handleError)
-//         );         
-//     }//deleteWebsite
-
-    // deleteWebsite(websiteID: number) : Observable<boolean> {
-    //     //const url = `${this.websiteUrl}/${websiteID}`; 
-
-    //     let deleteHttpOptions = {
-    //         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    //         body: websiteID
-    //     };
-
     //     return this.http
-    //         .delete<boolean>(this.websiteUrl, deleteHttpOptions)
-    //         .pipe(
-    //                 tap(val => this.log('val = ' + JSON.stringify(val)))
-    //                 , catchError(this.handleError)
-    //     );         
+    //         .get<IWebsite[]>(url, {headers, params })
+    //         .pipe (
+    //             tap(data => {
+    //                             //this.log(JSON.stringify(data))
+    //                        })
+    //             , catchError(this.handleError)
+    //     );
+    // }    
 
-    // }//deleteWebsite
 
     deleteWebsite(websiteID: number) : Observable<boolean> {
         const url = `${this.websiteUrl}/${websiteID}`; 
@@ -122,14 +108,7 @@ export class WebsiteService {
         );        
     }//deleteWebsite
 
-    saveWebsite (website: IWebsite): Observable<number> {
-        return this.http
-            .post<number>(this.websiteUrl, website, httpOptions)
-            .pipe(
-                    tap(val => this.log('val = ' + JSON.stringify(val)))
-                    , catchError(this.handleError)
-        );
-    }
+
 
 
     getWebsiteById(id: number): Observable<IWebsite> { 
