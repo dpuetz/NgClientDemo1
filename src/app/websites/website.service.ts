@@ -57,46 +57,11 @@ export class WebsiteService {
         return this.http
             .post<number>(this.websiteUrl, website, httpOptions)
             .pipe(
-                    tap(val => this.log('val = ' + JSON.stringify(val)))
-                    , catchError(this.handleError)
+                    tap(val => this.log('saveWebsite = ' + JSON.stringify(val))),
+                    catchError(this.handleError2('saveWebsite', 0) )
         );
     } 
-
-    private handleError2<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
-        return (error: any): Observable<T> => {
-        
-            // TODO: better job of transforming error for user consumption
-            this.log(`${operation} failed: ${error.message}`);
-
-            // TODO: send the error to remote logging infrastructure
-            let str = JSON.stringify(error, null, 4); 
-            this.log('error=' + str); // log to console instead
-
-            // Let the app keep running by returning an empty result.
-            return of(result as T);
-    };     
-        
-
-    // getWebsites(search: ISearch): Observable<IWebsite[]> {   
-
-    //     let headers = new HttpHeaders(); 
-    //     headers = headers.append ('Content-Type', 'application/json');
-
-    //     let searchWord = (search.searchWord == null || search.searchWord == "") ? "" : encodeURIComponent(search.searchWord); 
-    //     let params = new HttpParams().set('searchWord', searchWord);
-
-    //     const url = `${this.searchUrl}/${search.isPreferred}/${search.isBill}`;  
-        
-    //     return this.http
-    //         .get<IWebsite[]>(url, {headers, params })
-    //         .pipe (
-    //             tap(data => {
-    //                             //this.log(JSON.stringify(data))
-    //                        })
-    //             , catchError(this.handleError)
-    //     );
-    // }    
-
+ 
 
     deleteWebsite(websiteID: number) : Observable<boolean> {
         const url = `${this.websiteUrl}/${websiteID}`; 
@@ -197,7 +162,20 @@ export class WebsiteService {
     }
 
 
+   private handleError2<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
+        return (error: any): Observable<T> => {
+        
+            // TODO: better job of transforming error for user consumption
+            this.log(`${operation} failed: ${error.message}`);
 
+            // TODO: send the error to remote logging infrastructure
+            let str = JSON.stringify(error, null, 4); 
+            this.log('error=' + str); // log to console instead
+
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+    };     
+        
 
 
   }//class

@@ -110,6 +110,11 @@ export class WebsiteDetailComponent implements OnDestroy {
         this.websiteService.saveWebsite(this.website)
             .subscribe(webserviceWebsiteID => 
                     {
+                   
+                        if (!webserviceWebsiteID) {
+                            this.saveWebsiteError();
+                        } else {
+
                             //We now have to update the component with a reroute back to this component or will have problems: and the url still says id = 0, and more issues as user keeps adding new websites.
                             //Delay the re-route for a bit so user can see the saved message first.
                             this.popup = new Message('timedAlert', 'Save was successful!', "", 1000);
@@ -118,15 +123,19 @@ export class WebsiteDetailComponent implements OnDestroy {
                             setTimeout (() => {
                                this.router.navigate(['/websites/', webserviceWebsiteID, 'detail']); 
                             }, 1000);  
+                        }
                    
                     },
-                    error => {
-                                this.popup = new Message('alert', 'Sorry, an error occurred while saving the website.', "", 0);     
-                                window.scrollTo(0, 0);
-                             }
-                );              
+                    error => this.saveWebsiteError()
+                            
+                ); //subscribe
+
     }//save it
 
+    saveWebsiteError() : void {
+        this.popup = new Message('alert', 'Sorry, an error occurred while saving the website.', "", 0);     
+        window.scrollTo(0, 0);
+    }
      ngOnDestroy() {
             // !important - avoid memory leaks caused by navigationSubscription 
             if (this.navigationSubscription) {  
