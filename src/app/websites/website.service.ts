@@ -7,14 +7,14 @@
 
 //angular for services
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams, HttpErrorResponse  } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 //my models
-import { IWebsite, Website } from './iwebsite';
-import { IPurchase, Purchase } from './ipurchase';
+import { IWebsite } from './iwebsite';
+import { IPurchase } from './ipurchase';
 import { ISearch } from './isearch';
 
 const httpOptions = {
@@ -53,20 +53,21 @@ export class WebsiteService {
         return this.http
             .get<HttpResponse<IWebsite[]>>(url, {headers, params, observe: 'response' })
             .pipe (
-                tap( val => this.log(`getWebsites status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type} `)),    
+                tap( val => this.log(`getWebsites status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),    
                 map( val=> val.body),
-                catchError(this.handleError2('getWebsites', null) )
+                catchError(this.handleError('getWebsites', null) )
             ); //pipe
    
-    } // getWebsites        
-
+    } // getWebsites   
+    
     saveWebsite (website: IWebsite): Observable<number> {
         return this.http
             .post<HttpResponse<number>>(this.websiteUrl, website, { observe: 'response' })
-            .pipe(              
-                    tap(val => this.log('saveWebsite stringified = ' + JSON.stringify(val, null, 4))),
+            .pipe(   
+                    tap( val => this.log(`saveWebsite status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),          
+                    // tap(val => this.log('saveWebsite stringified = ' + JSON.stringify(val, null, 4))),
                     map(val => val.body),      //return the websiteID            
-                    catchError(this.handleError2('saveWebsite', null) )  //return null if error
+                    catchError(this.handleError('saveWebsite', null) )  //return null if error
             );//pipe
     } //saveWebsite  
 
@@ -75,9 +76,10 @@ export class WebsiteService {
         return this.http
             .delete<HttpResponse<boolean>>(url, { observe: 'response' })
             .pipe(
-                tap(val => this.log('deleteWebsite stringified = ' + JSON.stringify(val, null, 4))),
+                tap( val => this.log(`deleteWebsite status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),  
+                // tap(val => this.log('deleteWebsite stringified = ' + JSON.stringify(val, null, 4))),
                 map(val => val.body),          //val returns true if no error
-                catchError(this.handleError2('deleteWebsite', null) ) //return null if error
+                catchError(this.handleError('deleteWebsite', null) ) //return null if error
 
             ); //pipe
     }//deleteWebsite
@@ -85,10 +87,11 @@ export class WebsiteService {
     getWebsiteById(id: number): Observable<IWebsite> { 
         const url = `${this.websiteUrl}/${id}`; 
         return this.http.get<HttpResponse<IWebsite>>(url, { observe: 'response' })
-            .pipe(      
-                    tap(val => this.log('getWebsiteById stringified = ' + JSON.stringify(val, null, 4))),
+            .pipe(     
+                    tap( val => this.log(`getWebsiteById status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),  
+                    // tap(val => this.log('getWebsiteById stringified = ' + JSON.stringify(val, null, 4))),
                     map(val => val.body),          //val returns IWebsite if no error
-                    catchError(this.handleError2('getWebsiteById', null))  //return null if error
+                    catchError(this.handleError('getWebsiteById', null))  //return null if error
             ); //pipe
     }    
 
@@ -97,9 +100,10 @@ export class WebsiteService {
         return this.http
             .get<HttpResponse<IPurchase>>(url, { observe: 'response' })
             .pipe(
-                    tap(val => this.log('getPurchase stringified = ' + JSON.stringify(val, null, 4))),
+                    tap( val => this.log(`getPurchase status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),  
+                    // tap(val => this.log('getPurchase stringified = ' + JSON.stringify(val, null, 4))),
                     map(val => val.body),          //val returns IPurchase if no error
-                    catchError(this.handleError2('getPurchase', null))  //return null if error
+                    catchError(this.handleError('getPurchase', null))  //return null if error
             );//pipe
     }      
 
@@ -107,9 +111,10 @@ export class WebsiteService {
         return this.http
             .post<HttpResponse<IPurchase>>(this.purchaseUrl, purchase,  { observe: 'response' })
             .pipe(
-                    tap(val => this.log('savePurchase stringified = ' + JSON.stringify(val, null, 4))),
+                    // tap(val => this.log('savePurchase stringified = ' + JSON.stringify(val, null, 4))),
+                    tap( val => this.log(`savePurchase status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),  
                     map(val => val.body),          //val returns purchase if no error
-                    catchError(this.handleError2('savePurchase', null))  //return null if error
+                    catchError(this.handleError('savePurchase', null))  //return null if error
         ); 
     }
 
@@ -119,18 +124,18 @@ export class WebsiteService {
         return this.http
             .delete<HttpResponse<boolean>>(url, { observe: 'response' })
             .pipe(
-                tap(val => this.log('deletePurchase stringified = ' + JSON.stringify(val, null, 4))),
+                tap( val => this.log(`deletePurchase status: ${val.status}, ok: ${val.ok}, statusText: ${val.statusText}, type: ${val.type}, url: ${val.url} `)),  
+                // tap(val => this.log('deletePurchase stringified = ' + JSON.stringify(val, null, 4))),
                 map(val => true),          //val return true if no error
-                catchError(this.handleError2('deletePurchase', null) ) //return null if error
+                catchError(this.handleError('deletePurchase', null) ) //return null if error
         );        
     }    
 
-
     private log(message: string) {
-        console.log("Logged = ", message);
+        console.log("WebServLog = ", message);
     }
 
-   private handleError2<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
+   private handleError<T> (operation = 'operation', result?: T) {  //https://angular.io/tutorial/toh-pt6        
         return (error: any): Observable<T> => {
         
             // TODO: better job of transforming error for user consumption
@@ -143,11 +148,11 @@ export class WebsiteService {
             // Let the app keep running by returning an empty result.
             return of(result as T);
         }
-    };  //handleError2   
+    };  //handleError   
         
 
 
-  }//class
+}//class
 
 
 
