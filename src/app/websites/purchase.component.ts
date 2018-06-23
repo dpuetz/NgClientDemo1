@@ -19,7 +19,7 @@ export class PurchaseComponent implements OnInit {
     wasSubmitted: boolean;
     popup : IMessage;
     navigationSubscription;
-    a2eOptions: any = {format: 'M/D/YYYY'};
+    // a2eOptions: any = {format: 'M/D/YYYY'};
 
     constructor(
         private route: ActivatedRoute,

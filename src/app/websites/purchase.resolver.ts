@@ -36,9 +36,9 @@ export class PurchaseResolver implements Resolve<IPurchase> {
 
         return this.websiteService.getPurchase(+websiteID, +purchaseID)
             .pipe(
-                    tap(val=>console.log(JSON.stringify(val, null, 4))),
+                    // tap(val=>console.log(JSON.stringify(val, null, 4))),
                     catchError(this.handleError('PurchaseResolver', null) ), //return null if error
-                    delay(1000)
+                    delay(1)
                  );//pipe
 
   }//resolve

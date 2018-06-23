@@ -12,6 +12,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { WebsiteService } from './website.service';
 import { WebsiteDetailResolver } from './website-detail.resolver';
 import { PurchaseResolver } from './purchase.resolver';
+import { PurchaseMainComponent } from './purchase-main.component';
+import { PurchaseNotesComponent } from './purchase-notes.component';
 
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -23,6 +25,24 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   suffix: "",
   thousands: ","
 };
+
+// const routes: Routes = [  
+//         {
+//             path: '',
+//             component: WebsitesComponent
+//         },
+//         {
+//             path: ':id/detail', 
+//             component: WebsiteDetailComponent, 
+//             resolve: {website: WebsiteDetailResolver},  //get data before routing to page
+//             runGuardsAndResolvers:'always'   //allow re-load of the component to refresh it.
+//         },
+//         { 
+//             path: ':websiteId/purchase/:purchaseId', 
+//             component: PurchaseComponent,
+//             resolve: {purchase: PurchaseResolver}
+//         }
+// ]
 
 const routes: Routes = [  
         {
@@ -38,7 +58,23 @@ const routes: Routes = [
         { 
             path: ':websiteId/purchase/:purchaseId', 
             component: PurchaseComponent,
-            resolve: {purchase: PurchaseResolver}
+            resolve: {purchase: PurchaseResolver},
+            children: [
+                {
+                    path: '',
+                    redirectTo: 'main',
+                    pathMatch: 'full'
+                },                
+                {
+                    path: 'main',
+                    component: PurchaseMainComponent
+                },
+                {
+                    path: 'notes',
+                    component: PurchaseNotesComponent
+                }                
+                
+            ]
         }
 ]
 
@@ -56,6 +92,8 @@ imports: [
     WebsitesComponent,
     WebsiteDetailComponent,
     PurchaseComponent,
+    PurchaseMainComponent,
+    PurchaseNotesComponent
   ],
   
   providers: [

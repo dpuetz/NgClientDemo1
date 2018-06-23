@@ -34,7 +34,7 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
             .pipe(
                     // tap(val=>console.log(JSON.stringify(val, null, 4))),
                     catchError(this.handleError('WebsiteDetailResolver', null) ), //return null if error
-                    delay(1000)
+                    delay(1)
                  );//pipe
 
   }//resolve
