@@ -16,7 +16,7 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
 
   constructor( private websiteService: WebsiteService,
                private router: Router ) {}
-               
+
   resolve(  route: ActivatedRouteSnapshot, 
             state: RouterStateSnapshot): Observable<IWebsite> {
                 
@@ -32,9 +32,9 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
 
         return this.websiteService.getWebsiteById(+websiteID)
             .pipe(
-                    tap(val=>console.log(JSON.stringify(val, null, 4))),
+                    // tap(val=>console.log(JSON.stringify(val, null, 4))),
                     catchError(this.handleError('deletePurchase', null) ), //return null if error
-                    delay(2000)
+                    delay(1000)
                  );//pipe
 
   }//resolve
