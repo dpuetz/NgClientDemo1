@@ -11,7 +11,7 @@ import { SharedModule } from '../shared/shared.module';
 import { Routes, RouterModule } from '@angular/router';
 import { WebsiteService } from './website.service';
 import { WebsiteDetailResolver } from './website-detail.resolver';
-// import { WebsiteResolver } from './website-resolver.service';
+import { PurchaseResolver } from './purchase.resolver';
 
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -37,7 +37,8 @@ const routes: Routes = [
         },
         { 
             path: ':websiteId/purchase/:purchaseId', 
-            component: PurchaseComponent 
+            component: PurchaseComponent,
+            resolve: {purchase: PurchaseResolver}
         }
 ]
 
@@ -62,7 +63,6 @@ imports: [
         useValue: CustomCurrencyMaskConfig               
     }
     , WebsiteService
-    // , WebsiteResolver
 ]
 
 })

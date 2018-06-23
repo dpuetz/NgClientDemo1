@@ -3,37 +3,41 @@ import { Injectable } from '@angular/core';
 import { Resolve, Router, ActivatedRouteSnapshot, RouteReuseStrategy, RouterStateSnapshot } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
-import { delay, catchError } from 'rxjs/operators';
-import { IWebsite, Website } from './iwebsite';
+import { delay, catchError, tap } from 'rxjs/operators';
 import { WebsiteService } from './website.service';
-
+import { IPurchase, Purchase } from './ipurchase';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class WebsiteDetailResolver implements Resolve<IWebsite> {
+export class PurchaseResolver implements Resolve<IPurchase> {
 
   constructor( private websiteService: WebsiteService,
                private router: Router ) {}
 
   resolve(  route: ActivatedRouteSnapshot, 
-            state: RouterStateSnapshot): Observable<IWebsite> {
+            state: RouterStateSnapshot): Observable<IPurchase> {
                 
-        let websiteID = route.params['id'];
+        let purchaseID = route.params['purchaseId'];
+        let websiteID = route.params['websiteId'];
+
+        if (isNaN(purchaseID)) {
+            this.handleError('PurchaseResolver, Cannot get purchaseId', null);
+        }
 
         if (isNaN(websiteID)) {
-            this.handleError('WebsiteDetailResolver, Cannot get WebisteID', null);
+            this.handleError('PurchaseResolver, Cannot get websiteId', null);
         }
 
-        if (+websiteID === 0) {
-            return of(new Website());
+        if (parseInt(purchaseID) === 0 || parseInt(websiteID) === 0) {
+            return of(new Purchase());
         }
 
-        return this.websiteService.getWebsiteById(+websiteID)
+        return this.websiteService.getPurchase(+websiteID, +purchaseID)
             .pipe(
-                    // tap(val=>console.log(JSON.stringify(val, null, 4))),
-                    catchError(this.handleError('WebsiteDetailResolver', null) ), //return null if error
+                    tap(val=>console.log(JSON.stringify(val, null, 4))),
+                    catchError(this.handleError('PurchaseResolver', null) ), //return null if error
                     delay(1000)
                  );//pipe
 
