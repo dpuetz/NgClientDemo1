@@ -1,11 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IPurchase, Purchase } from './ipurchase'
-// import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
 import { NgForm } from '@angular/forms';
 import { IMessage, Message } from '../shared/imessage';
-
 
 @Component({
   templateUrl: './purchase.component.html',
@@ -13,7 +11,7 @@ import { IMessage, Message } from '../shared/imessage';
 })
 
 // export class PurchaseComponent implements  OnDestroy {
-export class PurchaseComponent {
+export class PurchaseComponent implements OnInit {
 
     purchase: IPurchase;
     websiteName: string;
@@ -26,15 +24,27 @@ export class PurchaseComponent {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private websiteService: WebsiteService
-    ) { 
-            // this.navigationSubscription = this.router.events.subscribe((e: any) => {
-            //     // If it is a NavigationEnd event, then re-initalise the component
-            //     if (e instanceof NavigationEnd) {
-            //         this.initializePurchaseDetail();
-            //     }
-            // });  
-    }//constructor
+        private websiteService: WebsiteService) {  }//constructor
+
+    ngOnInit(): void {
+
+        this.route.paramMap.subscribe(params => {
+
+        this.websiteName = '';
+        this.websiteId = 0;
+        this.wasSubmitted = false; 
+
+        let purchaseId = +params.get('purchaseId');
+        this.websiteId = +params.get('websiteId'); 
+
+        this.purchase = new Purchase();
+        this.purchase.websiteID = this.websiteId;
+
+        this.getWebsite(this.websiteId);
+        this.getPurchase(this.websiteId, purchaseId);
+        }); //subscribe
+        
+    } //ngOnInit
 
     // initializePurchaseDetail(){    //serves as the onInit function
     //     this.route.paramMap.subscribe(params => {
@@ -153,13 +163,6 @@ export class PurchaseComponent {
 
                 }); //subscribe          
     }  //saveIt   
-
-    //  ngOnDestroy() {
-    //         // !important - avoid memory leaks caused by navigationSubscription 
-    //         if (this.navigationSubscription) {  
-    //             this.navigationSubscription.unsubscribe();
-    //         }
-    //  }    
 
 
 
