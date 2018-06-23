@@ -26,8 +26,8 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
         { path: '', redirectTo: '/login', pathMatch: 'full'},
         { path: '**', component: LoginComponent }
     ]     
-    // , {preloadingStrategy: PreloadAllModules} )   //prod
-    , {preloadingStrategy: PreloadAllModules, enableTracing: true} ) //dev ONLY, view routing events in console.
+    , {preloadingStrategy: PreloadAllModules} )   //prod
+    // , {preloadingStrategy: PreloadAllModules, enableTracing: true} ) //dev ONLY, view routing events in console.
   ],
   declarations: [
     AppComponent,
