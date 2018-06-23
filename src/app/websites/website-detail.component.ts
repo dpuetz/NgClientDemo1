@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { WebsiteService } from '../websites/website.service';
 import { IWebsite, Website } from './iwebsite';
 import { NgForm } from '@angular/forms';
@@ -11,78 +12,37 @@ import { IMessage, Message } from '../shared/imessage';
     styleUrls: ['./website-detail.component.css']
 })
 
-export class WebsiteDetailComponent implements OnDestroy {
+export class WebsiteDetailComponent {
   
     website: IWebsite = new Website();
     wasSubmitted: boolean = false;
-    navigationSubscription;
     popup : IMessage;
 
     constructor(  private route: ActivatedRoute,
                   private router: Router,
                   private websiteService: WebsiteService){
-console.log("1");                      
-                  this.navigationSubscription = this.router.events.subscribe((e: any) => {
-                        // If it is a NavigationEnd event, then re-initalise the component
-                        if (e instanceof NavigationEnd) {
-console.log("2");
-                            this.initializeWebsiteDetail();
-                        }
-console.log("3"); 
-                    });  //navigationSubscription
-                        
     } //constructor
 
-//   ngOnInit() {
-//     //this.data = this.route.snapshot.data;
-//     console.log("4");
-//   }
+  ngOnInit() {
+        
+        this.route.data.subscribe(
+            data => this.onResolved(data['website'])
+        );
 
-    initializeWebsiteDetail(){    
-        this.route.paramMap.subscribe(params => {
-console.log("5");
-            //refresh these properties:
-            this.website = new Website();
-            this.wasSubmitted = false;  
-this.route.data.subscribe(
-    data => console.log(data['website'])
-);//subscribe
-
-            // //get the website
-            // let id = +params.get('id');
-            // this.getWebsite(id);
-        });
-    }
+  }//ngOnInit
 
     /////////getting
-//     getWebsite(websiteID: number): void
-//     {
-// console.log("6");        
-//         if (websiteID == 0) {
-//             this.website = new Website();
-//         } else  {
-//             this.websiteService.getWebsiteById(websiteID)
-//                 .subscribe(website => 
-//                         {
-//                             if (website) {
-//                                 this.website = website;
-//                                 window.scrollTo(0, 0);
-//                             } else {
-//                                 this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
-//                                 window.scrollTo(0, 0);
-//                             }
-                           
-//                         });//subscribe
-
-//         }//else
-//     }//getWebsite      
-
-    openWebsite(): void{
-        if (this.website.url && this.website.url.length > 0) {
-            let win=window.open(this.website.url, '_blank');
+    onResolved(website: IWebsite): void {
+        if (website) {
+            this.website = website;
+        } else {
+            this.website = new Website();
+            this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
         }
-    }
-  
+        window.scrollTo(0, 0);        
+        
+    } //onResolved
+ 
     /////////deleting
     deleteIt(): void{        
         this.popup = new Message('confirm', 'Are sure you want to delete this website and all it\'s purchases ?', "onComplete", 0);       
@@ -151,14 +111,11 @@ this.route.data.subscribe(
         window.scrollTo(0, 0);
     }
 
-     ngOnDestroy() {
-console.log("10");              
-            // !important - avoid memory leaks caused by navigationSubscription 
-            if (this.navigationSubscription) {  
-console.log("11");                   
-                this.navigationSubscription.unsubscribe();
-            }
-     }
+    openWebsite(): void{
+        if (this.website.url && this.website.url.length > 0) {
+            let win=window.open(this.website.url, '_blank');
+        }
+    }
 
   }//class
   

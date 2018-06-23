@@ -4,7 +4,7 @@ import { Resolve, Router, ActivatedRouteSnapshot, RouteReuseStrategy, RouterStat
 
 import { Observable, of } from 'rxjs';
 import { delay, tap, map, catchError } from 'rxjs/operators';
-import { IWebsite } from './iwebsite';
+import { IWebsite, Website } from './iwebsite';
 import { WebsiteService } from './website.service';
 
 
@@ -16,7 +16,7 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
 
   constructor( private websiteService: WebsiteService,
                private router: Router ) {}
-
+               
   resolve(  route: ActivatedRouteSnapshot, 
             state: RouterStateSnapshot): Observable<IWebsite> {
                 
@@ -26,27 +26,16 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
             this.handleError('WebsiteDetailResolver, Cannot get WebisteID', null);
         }
 
+        if (+websiteID === 0) {
+            return of(new Website());
+        }
+
         return this.websiteService.getWebsiteById(+websiteID)
             .pipe(
                     tap(val=>console.log(JSON.stringify(val, null, 4))),
-                    // map(val=>val),
-                    catchError(this.handleError('WebsiteDetailResolver, fetch error', null) ),
+                    catchError(this.handleError('deletePurchase', null) ), //return null if error
                     delay(2000)
                  );//pipe
-            // .subscribe(website => 
-            //         {
-            //             if (website) 
-            //                 return website;
-            //             else 
-            //                 this.foundErr("websiteID is not a number");                        
-                        // catchError(this.handleError('deletePurchase', null) ) //return null if error
-            //         })//subscribe
-            
-    // return of('Hello Alligator!')
-    //     .pipe(
-    //         delay(2000)
-    //     );
-    
 
   }//resolve
 
@@ -61,4 +50,5 @@ export class WebsiteDetailResolver implements Resolve<IWebsite> {
             return of(result as T);
         }
     };  //handleError     
+
 }//class
