@@ -20,14 +20,14 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
         { path: 'login', component: LoginComponent },
         {
             path: 'websites',
-            //data: { preload: false },  //this is for custom-built preloader services only
+            //data: { preload: false },  //this is for custom-built preloader services only, relates to lazy loading
             loadChildren: './websites/websites.module#WebsitesModule'
         },        
         { path: '', redirectTo: '/login', pathMatch: 'full'},
         { path: '**', component: LoginComponent }
     ]     
-    , {preloadingStrategy: PreloadAllModules} )   //prod
-    
+    // , {preloadingStrategy: PreloadAllModules} )   //prod
+    , {preloadingStrategy: PreloadAllModules, enableTracing: true} ) //dev ONLY, view routing events in console.
   ],
   declarations: [
     AppComponent,
