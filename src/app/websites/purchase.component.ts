@@ -1,6 +1,7 @@
-import { Component,  OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { IPurchase, Purchase } from './ipurchase'
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+// import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
 import { NgForm } from '@angular/forms';
 import { IMessage, Message } from '../shared/imessage';
@@ -11,7 +12,8 @@ import { IMessage, Message } from '../shared/imessage';
   styleUrls: ['./purchase.component.css']
 })
 
-export class PurchaseComponent implements  OnDestroy {
+// export class PurchaseComponent implements  OnDestroy {
+export class PurchaseComponent {
 
     purchase: IPurchase;
     websiteName: string;
@@ -26,32 +28,32 @@ export class PurchaseComponent implements  OnDestroy {
         private router: Router,
         private websiteService: WebsiteService
     ) { 
-            this.navigationSubscription = this.router.events.subscribe((e: any) => {
-                // If it is a NavigationEnd event, then re-initalise the component
-                if (e instanceof NavigationEnd) {
-                    this.initializePurchaseDetail();
-                }
-            });  
+            // this.navigationSubscription = this.router.events.subscribe((e: any) => {
+            //     // If it is a NavigationEnd event, then re-initalise the component
+            //     if (e instanceof NavigationEnd) {
+            //         this.initializePurchaseDetail();
+            //     }
+            // });  
     }//constructor
 
-    initializePurchaseDetail(){    //serves as the onInit function
-        this.route.paramMap.subscribe(params => {
+    // initializePurchaseDetail(){    //serves as the onInit function
+    //     this.route.paramMap.subscribe(params => {
 
-            this.websiteName = '';
-            this.websiteId = 0;
-            this.wasSubmitted = false; 
+    //         this.websiteName = '';
+    //         this.websiteId = 0;
+    //         this.wasSubmitted = false; 
 
-            let purchaseId = +params.get('purchaseId');
-            this.websiteId = +params.get('websiteId'); 
+    //         let purchaseId = +params.get('purchaseId');
+    //         this.websiteId = +params.get('websiteId'); 
 
-            this.purchase = new Purchase();
-            this.purchase.websiteID = this.websiteId;
+    //         this.purchase = new Purchase();
+    //         this.purchase.websiteID = this.websiteId;
 
-            this.getWebsite(this.websiteId);
-            this.getPurchase(this.websiteId, purchaseId);
-        });
+    //         this.getWebsite(this.websiteId);
+    //         this.getPurchase(this.websiteId, purchaseId);
+    //     });
 
-    }//initializePurchaseDetail
+    // }//initializePurchaseDetail
 
     ////////////getting
     getPurchase(websiteId: number, purchaseId: number): void { 
@@ -105,19 +107,19 @@ export class PurchaseComponent implements  OnDestroy {
     }
     onComplete(event:any):void {
         //if they confirm in the message-component dialog launched by this.deleteIt();
-                this.websiteService.deletePurchase(this.purchase.purchaseID, this.websiteId)
-                .subscribe(val => 
-                            {                                                              
-                                if (val) {                                                     
-                                    //show success msg for 1 sec then route back to websites list
-                                    this.popup = new Message('timedAlert', 'Delete was successful!', "", 1000);
-                                    setTimeout (() => {
-                                        this.router.navigate(['/websites', this.websiteId, 'detail' ]);
-                                    }, 1000);  
-                                } else {
-                                    this.popup = new Message('alert', 'Sorry, an error occurred while deleting the purchase.', "", 0);    
-                                }
-                            });//subscribe
+        this.websiteService.deletePurchase(this.purchase.purchaseID, this.websiteId)
+        .subscribe(val => 
+                    {                                                              
+                        if (val) {                                                     
+                            //show success msg for 1 sec then route back to websites list
+                            this.popup = new Message('timedAlert', 'Delete was successful!', "", 1000);
+                            setTimeout (() => {
+                                this.router.navigate(['/websites', this.websiteId, 'detail' ]);
+                            }, 1000);  
+                        } else {
+                            this.popup = new Message('alert', 'Sorry, an error occurred while deleting the purchase.', "", 0);    
+                        }
+                    });//subscribe
     }//onComplete  
      
     //////////saving
@@ -152,12 +154,12 @@ export class PurchaseComponent implements  OnDestroy {
                 }); //subscribe          
     }  //saveIt   
 
-     ngOnDestroy() {
-            // !important - avoid memory leaks caused by navigationSubscription 
-            if (this.navigationSubscription) {  
-                this.navigationSubscription.unsubscribe();
-            }
-     }    
+    //  ngOnDestroy() {
+    //         // !important - avoid memory leaks caused by navigationSubscription 
+    //         if (this.navigationSubscription) {  
+    //             this.navigationSubscription.unsubscribe();
+    //         }
+    //  }    
 
 
 
