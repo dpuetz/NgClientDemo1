@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
 import { IWebsite, Website } from './iwebsite';
@@ -13,7 +13,7 @@ import { IMessage, Message } from '../shared/imessage';
 
 export class WebsiteDetailComponent implements OnDestroy {
   
-    website: IWebsite;
+    website: IWebsite = new Website();
     wasSubmitted: boolean = false;
     navigationSubscription;
     popup : IMessage;
@@ -21,50 +21,61 @@ export class WebsiteDetailComponent implements OnDestroy {
     constructor(  private route: ActivatedRoute,
                   private router: Router,
                   private websiteService: WebsiteService){
-                      
+console.log("1");                      
                   this.navigationSubscription = this.router.events.subscribe((e: any) => {
                         // If it is a NavigationEnd event, then re-initalise the component
                         if (e instanceof NavigationEnd) {
+console.log("2");
                             this.initializeWebsiteDetail();
                         }
+console.log("3"); 
                     });  //navigationSubscription
                         
     } //constructor
 
+//   ngOnInit() {
+//     //this.data = this.route.snapshot.data;
+//     console.log("4");
+//   }
+
     initializeWebsiteDetail(){    
         this.route.paramMap.subscribe(params => {
-
+console.log("5");
             //refresh these properties:
             this.website = new Website();
             this.wasSubmitted = false;  
+this.route.data.subscribe(
+    data => console.log(data['website'])
+);//subscribe
 
-            //get the website
-            let id = +params.get('id');
-            this.getWebsite(id);
+            // //get the website
+            // let id = +params.get('id');
+            // this.getWebsite(id);
         });
     }
 
     /////////getting
-    getWebsite(websiteID: number): void
-    {
-        if (websiteID == 0) {
-            this.website = new Website();
-        } else  {
-            this.websiteService.getWebsiteById(websiteID)
-                .subscribe(website => 
-                        {
-                            if (website) {
-                                this.website = website;
-                                window.scrollTo(0, 0);
-                            } else {
-                                this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
-                                window.scrollTo(0, 0);
-                            }
+//     getWebsite(websiteID: number): void
+//     {
+// console.log("6");        
+//         if (websiteID == 0) {
+//             this.website = new Website();
+//         } else  {
+//             this.websiteService.getWebsiteById(websiteID)
+//                 .subscribe(website => 
+//                         {
+//                             if (website) {
+//                                 this.website = website;
+//                                 window.scrollTo(0, 0);
+//                             } else {
+//                                 this.popup = new Message('alert', 'Sorry, an error occurred while getting the website.', "", 0);   
+//                                 window.scrollTo(0, 0);
+//                             }
                            
-                        });//subscribe
+//                         });//subscribe
 
-        }//else
-    }//getWebsite      
+//         }//else
+//     }//getWebsite      
 
     openWebsite(): void{
         if (this.website.url && this.website.url.length > 0) {
@@ -141,8 +152,10 @@ export class WebsiteDetailComponent implements OnDestroy {
     }
 
      ngOnDestroy() {
+console.log("10");              
             // !important - avoid memory leaks caused by navigationSubscription 
             if (this.navigationSubscription) {  
+console.log("11");                   
                 this.navigationSubscription.unsubscribe();
             }
      }

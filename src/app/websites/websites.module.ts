@@ -10,6 +10,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';  //https://font
 import { SharedModule } from '../shared/shared.module';
 import { Routes, RouterModule } from '@angular/router';
 import { WebsiteService } from './website.service';
+import { WebsiteDetailResolver } from './website-detail.resolver';
 // import { WebsiteResolver } from './website-resolver.service';
 
 
@@ -31,7 +32,7 @@ const routes: Routes = [
         {
             path: ':id/detail', 
             component: WebsiteDetailComponent, 
-            // resolve: {website: WebsiteResolver},
+            resolve: {website: WebsiteDetailResolver},  //get data before routing to page
             runGuardsAndResolvers:'always'   //allow re-load of the component to refresh it.
         },
         { 
