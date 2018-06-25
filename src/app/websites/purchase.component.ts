@@ -125,7 +125,7 @@ export class PurchaseComponent implements OnInit, OnDestroy {
     saveIt(): void {
 
         this.wasSubmittedService = true;
-console.log("saveIt purch componane: this.wasSubmittedService = " + this.wasSubmittedService);
+
         if (!this.isValid(null)) {
             return;
         }

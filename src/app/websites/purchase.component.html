@@ -42,7 +42,7 @@
       <div style="margin-left:20px;">
                     <div class="pull-left bottom-right-space"  >
                       <button class="btn btn-info"
-                            [disabled]="!isValid() && wasSubmittedService"
+                            [disabled]="!isValid(null) && wasSubmittedService"
                             (click)="saveIt();">Save</button>
                     </div>                        
                     <div class="pull-left bottom-right-space " >
