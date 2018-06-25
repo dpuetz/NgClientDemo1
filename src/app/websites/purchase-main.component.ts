@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IPurchase } from './ipurchase'
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { ProductSaveService } from './product-save.service';
 
 
 @Component({
@@ -15,10 +16,19 @@ export class PurchaseMainComponent  implements OnInit {
     purchase: IPurchase;
     a2eOptions: any = {format: 'M/D/YYYY'};
 
-    constructor (private route: ActivatedRoute) {
+    get wasSubmittedService():boolean { 
+        return this.saveService.wasSubmitted; 
+    } 
+    set wasSubmittedService(value: boolean) { 
+        this.saveService.wasSubmitted = value; 
+    }     
+
+    constructor (private route: ActivatedRoute,
+                 private saveService: ProductSaveService) {
     }
 
     ngOnInit(): void {
+    
         this.route.parent.data.subscribe(
             data => 
             { 

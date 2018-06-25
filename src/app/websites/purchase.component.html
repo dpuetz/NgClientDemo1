@@ -25,24 +25,24 @@
         <div class="wizard">
             <a [routerLink]="['main']" routerLinkActive="active"> Details
                   <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
-                                                      !isValid('main') && wasSubmitted}"></span>
+                                                      !isValid('main') && wasSubmittedService}"></span>
             </a>
             <a [routerLink]="['notes']" routerLinkActive="active"> Notes
                   <span  [ngClass]="{'glyphicon glyphicon-exclamation-sign':
-                                                      !isValid('notes') && wasSubmitted}"></span>
+                                                      !isValid('notes') && wasSubmittedService}"></span>
             </a>
         </div>
 
         <router-outlet></router-outlet>
 
  </div> <!--panel-body-->
-      <!-- [disabled]="!isValid()" -->
+
   <div class="panel-footer">
       <div class="row" >
       <div style="margin-left:20px;">
                     <div class="pull-left bottom-right-space"  >
                       <button class="btn btn-info"
-                            
+                            [disabled]="!isValid() && wasSubmittedService"
                             (click)="saveIt();">Save</button>
                     </div>                        
                     <div class="pull-left bottom-right-space " >

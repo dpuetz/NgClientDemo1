@@ -5,7 +5,7 @@
 
                  <div class="form-group">
                         <label 
-                            class="control-label" 
+                            class="control-label required" 
                             for="notes">Notes:</label>         
                         <textarea type="text" 
                             class="form-control"                         
@@ -16,8 +16,7 @@
                             [(ngModel)]="purchase.notes"              
                             ></textarea> 
                             <div class="alert alert-danger"
-                                *ngIf ="(notes.touched || notes.dirty || purchase.purchaseID != 0) &&
-                                        notes.errors" >
+                                *ngIf ="wasSubmittedService && notes.errors" >
                                         <span *ngIf="notes.errors.required">
                                             Notes is a required field.</span>                                                                     
                             </div>  

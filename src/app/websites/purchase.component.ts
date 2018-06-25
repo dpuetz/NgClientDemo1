@@ -3,6 +3,7 @@ import { IPurchase, Purchase } from './ipurchase'
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
 import { IMessage, Message } from '../shared/imessage';
+import { ProductSaveService } from './product-save.service';
 
 @Component({
   templateUrl: './purchase.component.html',
@@ -20,11 +21,18 @@ export class PurchaseComponent implements OnInit, OnDestroy {
 
     private dataIsValid: {[key: string]: boolean} = {};
    
+    get wasSubmittedService():boolean { 
+        return this.saveService.wasSubmitted; 
+    } 
+    set wasSubmittedService(value: boolean) { 
+        this.saveService.wasSubmitted = value; 
+    }          
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,        
-        private websiteService: WebsiteService) {    
+                    private route: ActivatedRoute,
+                    private router: Router,        
+                    private websiteService: WebsiteService,
+                    private saveService: ProductSaveService) {    
             this.navigationSubscription = this.router.events.subscribe((e: any) => {
                 // If it is a NavigationEnd event, then re-initalise the component
                 if (e instanceof NavigationEnd) {
@@ -32,13 +40,17 @@ export class PurchaseComponent implements OnInit, OnDestroy {
                 }
             });  
 
-         }
+         }//constructor
+
 
     ngOnInit(): void {
         this.initializePurchaseDetail();        
     } 
 
     initializePurchaseDetail(): void {
+
+        this.wasSubmittedService = false;
+
         // [routerLink]="['/websites', website.websiteID, 'purchase', purchase.purchaseID]"
         // [queryParams] = "{websiteName: website.websiteName}">
 
@@ -112,8 +124,8 @@ export class PurchaseComponent implements OnInit, OnDestroy {
     //////////saving
     saveIt(): void {
 
-        this.wasSubmitted = true;
-
+        this.wasSubmittedService = true;
+console.log("saveIt purch componane: this.wasSubmittedService = " + this.wasSubmittedService);
         if (!this.isValid(null)) {
             return;
         }

@@ -61,6 +61,11 @@ th{
     margin-bottom: 0px;
 }
 
+.required:after { 
+    content:" *"; 
+    color:red;
+}
+
 /* start Spinner */
     .spinner {
     font-size:300%;
