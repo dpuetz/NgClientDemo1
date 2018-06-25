@@ -83,7 +83,8 @@
                     </tr>
                 </thead>
                 <tbody >                 
-                    <tr *ngFor="let website of websites"  [routerLink] = "['/websites', website.websiteID, 'detail']">
+                    <tr *ngFor="let website of websites" 
+                        [routerLink] = "['/websites', website.websiteID, 'detail']">
                        <td><i *ngIf = "website.preferred" class="fa fa-check smallFont"></i></td>
                        <td><i *ngIf = "website.isBill" class="fa fa-check smallFont"></i></td>
                        <td class="websiteName">{{website.websiteName}}</td>

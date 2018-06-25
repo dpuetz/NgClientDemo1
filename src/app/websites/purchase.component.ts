@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IPurchase, Purchase } from './ipurchase'
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { WebsiteService } from '../websites/website.service';
-import { NgForm } from '@angular/forms';
 import { IMessage, Message } from '../shared/imessage';
 
 @Component({
@@ -10,106 +9,84 @@ import { IMessage, Message } from '../shared/imessage';
   styleUrls: ['./purchase.component.css']
 })
 
-// export class PurchaseComponent implements  OnDestroy {
-export class PurchaseComponent implements OnInit {
+export class PurchaseComponent implements OnInit, OnDestroy {
 
     purchase: IPurchase;
-    websiteName: string;
-    websiteId: number;
+    websiteName: string = '';
+    websiteId: number = 0;
     wasSubmitted: boolean;
     popup : IMessage;
     navigationSubscription;
-    // a2eOptions: any = {format: 'M/D/YYYY'};
+
+    private dataIsValid: {[key: string]: boolean} = {};
+   
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
-        private websiteService: WebsiteService) {  }//constructor
+        private router: Router,        
+        private websiteService: WebsiteService) {    
+            this.navigationSubscription = this.router.events.subscribe((e: any) => {
+                // If it is a NavigationEnd event, then re-initalise the component
+                if (e instanceof NavigationEnd) {
+                    this.initializePurchaseDetail();
+                }
+            });  
+
+         }
 
     ngOnInit(): void {
+        this.initializePurchaseDetail();        
+    } 
 
+    initializePurchaseDetail(): void {
+        // [routerLink]="['/websites', website.websiteID, 'purchase', purchase.purchaseID]"
+        // [queryParams] = "{websiteName: website.websiteName}">
+
+        //get the queryparam websiteName from queryParams
+        this.websiteName = this.route.snapshot.queryParams.websiteName;        
+
+        //get websiteId from required parameters
         this.route.paramMap.subscribe(params => {
-
-        this.websiteName = '';
-        this.websiteId = 0;
-        this.wasSubmitted = false; 
-
-        let purchaseId = +params.get('purchaseId');
-        this.websiteId = +params.get('websiteId'); 
-
-        this.purchase = new Purchase();
-        this.purchase.websiteID = this.websiteId;
-
-        this.getWebsite(this.websiteId);
-        this.getPurchase(this.websiteId, purchaseId);
+            this.websiteId = +params.get('websiteId'); 
         }); //subscribe
-        
-    } //ngOnInit
 
-    // initializePurchaseDetail(){    //serves as the onInit function
-    //     this.route.paramMap.subscribe(params => {
+        //get purchase from resolved data
+        this.route.data.subscribe(data => {
+             this.purchase = data['purchase'];
+        });       
+    } //initializePurchaseDetail
 
-    //         this.websiteName = '';
-    //         this.websiteId = 0;
-    //         this.wasSubmitted = false; 
 
-    //         let purchaseId = +params.get('purchaseId');
-    //         this.websiteId = +params.get('websiteId'); 
+    isValid (path: string): boolean {
+        this.validate();
+        if (path) {
+            return this.dataIsValid[path];
+        } else {
 
-    //         this.purchase = new Purchase();
-    //         this.purchase.websiteID = this.websiteId;
+            let x = Object.keys(this.dataIsValid).every (d => this.dataIsValid[d] === true);
+            return (this.dataIsValid &&
+                    Object.keys(this.dataIsValid).every (d => this.dataIsValid[d] == true));
+        }    
 
-    //         this.getWebsite(this.websiteId);
-    //         this.getPurchase(this.websiteId, purchaseId);
-    //     });
+    }
 
-    // }//initializePurchaseDetail
+    validate(): void {
 
-    ////////////getting
-    getPurchase(websiteId: number, purchaseId: number): void { 
-       
-        if (! websiteId || websiteId == 0) {
-            this.router.navigate(['/websites']);
-        }
-        else if (purchaseId == 0) {
-            this.purchase = new Purchase();
-        }
-        else {
-            this.websiteService.getPurchase(websiteId, purchaseId)
-                .subscribe(purchase => 
-                    {
-                        if (purchase) {
-                            this.purchase = purchase;
-                            window.scrollTo(0, 0);
-                        } else {
-                            this.popup = new Message('alert', 'Sorry, an error has occurred', "", 0); 
-                            window.scrollTo(0, 0);
-                        }
-                    });    //subscribe 
-        } //if
+        this.dataIsValid = {};
 
-    }//getPurchase
-
-    getWebsite(websiteID: number): void  //just to get the website name
-    {
-        if (websiteID == 0)
-        {
-            this.router.navigate(['/websites']);   
-        }
+        //main tab     
+        if ( this.purchase.productName && this.purchase.productName.length > 1 )
+            this.dataIsValid['main'] = true;
         else
-        {
-            this.websiteService.getWebsiteById(websiteID)
-                .subscribe(website => 
-                        {
-                            if (website) {
-                                this.websiteName = website.websiteName;    
-                            } else {
-                               //don't show any errors here, show them in getPurchase
-                            }                           
-                        });//subscribe            
+            this.dataIsValid['main'] = false;
 
-        }
-    }  //getWebsite      
+        //notes tab
+        if (this.purchase.notes)
+            this.dataIsValid['notes'] = true;
+        else
+            this.dataIsValid['notes'] = false;
+    }
+   
     
     ///////deleting
     deleteIt(): void{
@@ -133,15 +110,16 @@ export class PurchaseComponent implements OnInit {
     }//onComplete  
      
     //////////saving
-    saveIt(purchaseForm: NgForm): void {
+    saveIt(): void {
 
         this.wasSubmitted = true;
-        if (!purchaseForm.valid) {
+
+        if (!this.isValid(null)) {
             return;
         }
         
         this.purchase.websiteID = this.websiteId; //website.id might not be there, so add it here for calling the webservice.
-        
+          
         this.websiteService.savePurchase(this.purchase)
             .subscribe(savedPurchase => 
                 {
@@ -152,9 +130,9 @@ export class PurchaseComponent implements OnInit {
                         //We now have to update the component with a reroute reroute back to this component or will might have problems: and the url still says id = 0, and more issues as user keeps adding new websites.
                         //Delay the re-route for a bit so user can see the saved message first.
                         this.popup = new Message('timedAlert', 'Save was successful!', "", 1000);
-
                         setTimeout (() => {
-                            this.router.navigate(['/websites/', this.purchase.websiteID, 'purchase', this.purchase.purchaseID]); 
+                           this.router.navigate(['/websites', this.purchase.websiteID, 'purchase', this.purchase.purchaseID]); 
+                            // this.router.navigate(['/websites', this.websiteId, 'detail']); 
                         }, 1000);  
 
                     } else {
@@ -164,6 +142,12 @@ export class PurchaseComponent implements OnInit {
                 }); //subscribe          
     }  //saveIt   
 
+     ngOnDestroy() {
+            // !important - avoid memory leaks caused by navigationSubscription 
+            if (this.navigationSubscription) {  
+                this.navigationSubscription.unsubscribe();
+            }
+     }    
 
 
 } //class

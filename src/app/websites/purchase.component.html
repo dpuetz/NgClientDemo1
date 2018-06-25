@@ -17,38 +17,34 @@
           </nav>
         
 <div class="panel-header">
-    <div class="purchase-header"><h4>Purchase for {{websiteName}}</h4></div>
-
+    <div class="website-header"><h4>Purchase for {{websiteName}}</h4></div>
 </div>      
-
-
 
 <div class="panel-body">
 
         <div class="wizard">
             <a [routerLink]="['main']" routerLinkActive="active"> Details
-                <!--   <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
-                                                      !isValid('main')}"></span> -->
+                  <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('main') && wasSubmitted}"></span>
             </a>
             <a [routerLink]="['notes']" routerLinkActive="active"> Notes
-                  <!-- <span  [ngClass]="{'glyphicon glyphicon-exclamation-sign':
-                                                      !isValid('notes')}"></span> -->
+                  <span  [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('notes') && wasSubmitted}"></span>
             </a>
         </div>
 
         <router-outlet></router-outlet>
 
  </div> <!--panel-body-->
-      
-
+      <!-- [disabled]="!isValid()" -->
   <div class="panel-footer">
       <div class="row" >
       <div style="margin-left:20px;">
                     <div class="pull-left bottom-right-space"  >
-                      <button class="btn btn-info " 
-                            [disabled]="wasSubmitted && purchaseForm.invalid"
-                            (click)="saveIt(purchaseForm);">Save</button>
-                    </div>          
+                      <button class="btn btn-info"
+                            
+                            (click)="saveIt();">Save</button>
+                    </div>                        
                     <div class="pull-left bottom-right-space " >
                       <button class="btn btn-info " (click)="deleteIt();"  *ngIf = "purchase.purchaseID > 0">Delete</button>
                     </div>
@@ -58,21 +54,6 @@
                             Cancel</button>                       
                     </div>
       </div>            
-      <!-- <div style="margin-left:20px;">
-                    <div class="pull-left bottom-right-space"  >
-                      <button class="btn btn-info " 
-                            [disabled]="wasSubmitted && purchaseForm.invalid"
-                            (click)="saveIt(purchaseForm);">Save</button>
-                    </div>          
-                    <div class="pull-left bottom-right-space " >
-                      <button class="btn btn-info " (click)="deleteIt();"  *ngIf = "purchase.purchaseID > 0">Delete</button>
-                    </div>
-                    <div class="pull-left bottom-right-space" >              
-                      <button class="btn btn-info" 
-                            [routerLink] = "['/websites', websiteId, 'detail']">
-                            Cancel</button>                       
-                    </div>
-      </div>   -->
       </div>  <!--row-->           
       </div>  <!--panel-footer-->
                 

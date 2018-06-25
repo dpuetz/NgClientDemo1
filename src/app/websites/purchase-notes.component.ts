@@ -1,30 +1,32 @@
-import { Component,  OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IPurchase, Purchase } from './ipurchase'
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { WebsiteService } from '../websites/website.service';
+import { Component,  OnInit, ViewChild } from '@angular/core';
+import { IPurchase } from './ipurchase'
+import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { IMessage, Message } from '../shared/imessage';
-
 
 @Component({
   templateUrl: './purchase-notes.component.html',
-//   styleUrls: ['./purchase.component.css']
 })
 
 
 export class PurchaseNotesComponent  implements OnInit {
 
-    @ViewChild(NgForm) productForm: NgForm;
+    @ViewChild(NgForm) purchaseForm: NgForm;
 
-    purchase: IPurchase = new Purchase();
+     purchase: IPurchase;
 
-    constructor (private route: ActivatedRoute) {}
+    constructor (private route: ActivatedRoute) {
+    }
 
     ngOnInit(): void {
         this.route.parent.data.subscribe(
-            data => this.purchase = data['purchase']
-        );
+            data => {
+                        this.purchase = data['purchase'];
+                        // if (this.purchaseForm) {            //probably not needed here, because they can't add a new purchase without going back to the website-detail component.
+                        //     this.purchaseForm.reset();
+                        // }
+                    }
+        );//subscribe
 
-    }
+    }//ngOnInit
     
 } //class

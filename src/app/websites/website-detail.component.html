@@ -30,7 +30,8 @@
                               <a routerLink="/websites/0/detail">Add New Website</a>
                             </li>
                             <li *ngIf="website.websiteID > 0">
-                              <a [routerLink]="['/websites', website.websiteID, 'purchase', 0]" [queryParams]="{ websiteName: website.name }">Add New Purchase</a>
+                              <a [routerLink]="['/websites', website.websiteID, 'purchase', 0]" 
+                              [queryParams]="{ websiteName: website.websiteName}">Add New Purchase</a>
                             </li>
                           </ul>
             </div>
@@ -42,11 +43,11 @@
     <div class="panel-body">
     
     
+    <div  *ngIf = "website.websiteName" class="panel-header header-style">
+        <div class="website-header"><h4>Website name:  {{website.websiteName}} </h4></div>
+    </div>     
 
-
-    <div *ngIf = "website.websiteID > 0" style="text-align:center"><label>Website name: {{website.websiteName}}</label></div>
         <form #websiteForm="ngForm" novalidate>
-
           <div class="form-group">
             <label class="control-label" for="url">Website url:</label>
 
@@ -147,7 +148,8 @@
 
           <div class="form-group">
             <div *ngIf="website.websiteID > 0"  style="text-align:right;margin-bottom:10px;">
-              <a [routerLink]="['/websites', website.websiteID, 'purchase', 0]">Add New Purchase</a>
+              <a [routerLink]="['/websites', website.websiteID, 'purchase', 0]"
+                 [queryParams]="{ websiteName: website.websiteName}">Add New Purchase</a>
             </div>
 
             <div class="table-responsive">
@@ -161,7 +163,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let purchase of website.lstPurchases" 
-                        [routerLink]="['/websites', website.websiteID, 'purchase', purchase.purchaseID]">
+                        [routerLink]="['/websites', website.websiteID, 'purchase', purchase.purchaseID]"
+                        [queryParams] = "{websiteName: website.websiteName}">
                       <td>{{purchase.productName}}</td>
                       <td>{{purchase.purchasedOn}}</td>
                       <td>{{purchase.arrivedOn}}</td>

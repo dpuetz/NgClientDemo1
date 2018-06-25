@@ -1,6 +1,6 @@
 <div class="panel-body">
  
-        
+
         <form #purchaseForm="ngForm">
 
                  <div class="form-group">
@@ -13,14 +13,21 @@
                             name="productName"
                             #productName="ngModel"
                             [(ngModel)]="purchase.productName" 
-                            required             
+                            required  
+                            minlength="2"           
                             />
-                            <div *ngIf ="wasSubmitted && !productName.valid"
-                                    class="alert alert-danger">
-                                    Purchase name is required.
-                            </div>                                
-                      </div>
-                                      
+                                <!-- *ngIf ="(productName.touched || productName.dirty || purchase.purchaseID != 0) &&
+                                        productName.errors" >                             -->
+                            <div class="alert alert-danger"
+                                *ngIf ="
+                                        productName.errors" >
+                                        <span *ngIf="productName.errors.required">
+                                            Purchase name is required.</span>
+                                        <span *ngIf="productName.errors.minlength">
+                                            Purchase name must be at least two characters.</span>                                                                          
+                            </div>                               
+                      </div> <!--form-group-->
+                                
                       <div class="form-group">
                         <label class="control-label" for="purchasedOn">Date purchased:</label>    
                         <div class="input-group">

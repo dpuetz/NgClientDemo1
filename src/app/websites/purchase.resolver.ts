@@ -14,11 +14,13 @@ import { IPurchase, Purchase } from './ipurchase';
 export class PurchaseResolver implements Resolve<IPurchase> {
 
   constructor( private websiteService: WebsiteService,
-               private router: Router ) {}
+               private router: Router ) {
+                   
+               }
 
   resolve(  route: ActivatedRouteSnapshot, 
             state: RouterStateSnapshot): Observable<IPurchase> {
-                
+           
         let purchaseID = route.params['purchaseId'];
         let websiteID = route.params['websiteId'];
 
